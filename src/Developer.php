@@ -2,6 +2,7 @@
 
 namespace App;
 
+// some changes
 class Developer extends Worker
 {
     use HasRest;
