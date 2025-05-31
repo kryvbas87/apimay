@@ -1,0 +1,15 @@
+{
+    "name": "kryvb/oop_may",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "kryvbas87",
+            "email": "kryvbas87@gmail.com"
+        }
+    ],
+    "require": {}
+}

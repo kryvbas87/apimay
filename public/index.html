@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Простое API GUI</title>
+</head>
+<body>
+<h1>Пользователи</h1>
+
+<!-- Форма добавления -->
+<form id="createUserForm">
+    <input type="text" name="name" placeholder="Имя" required />
+    <input type="text" name="email" placeholder="Email" required />
+    <button type="submit">Создать пользователя</button>
+</form>
+
+<!-- Кнопка загрузки пользователей -->
+<button onclick="loadUsers()">Загрузить пользователей</button>
+
+<ul id="userList"></ul>
+
+<script>
+    async function loadUsers() {
+        const response = await fetch('http://localhost:8000/api/users');
+        const users = await response.json();
+        const list = document.getElementById('userList');
+        list.innerHTML = '';
+        users.forEach(user => {
+            const li = document.createElement('li');
+            li.textContent = `${user.id}: ${user.name} (${user.email})`;
+            list.appendChild(li);
+        });
+    }
+
+    document.getElementById('createUserForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        const response = await fetch('http://localhost:8000/api/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+            alert('Пользователь создан!');
+            loadUsers();
+            form.reset();
+        } else {
+            alert('Ошибка при создании');
+        }
+    });
+</script>
+</body>
+</html>

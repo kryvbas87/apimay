@@ -1,0 +1,14 @@
+1. Открой терминал в корне проекта
+bash
+
+cd C:\work_php\oop_may
+
+2. Запусти встроенный сервер, указав корнем src/Api
+bash
+
+php -S localhost:8000 -t src/Api
+
+3. Открой в браузере:
+arduino
+
+http://localhost:8000

@@ -1,0 +1,31 @@
+# Composer
+/vendor/
+
+# Кэш и временные файлы
+*.log
+*.cache
+*.tmp
+
+# IDE и редакторы
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+
+# OS-specific
+ehthumbs.db
+Icon?
+
+# PHPStorm/JetBrains
+*.iml
+out/
+
+# Node/npm (если добавишь фронт)
+node_modules/
+
+# Env файлы
+.env

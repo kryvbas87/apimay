@@ -1,0 +1,9 @@
+🚀 Как запускать
+🔹 API
+bash
+
+php -S localhost:8000 -t public
+
+http://localhost:8000
+http://localhost:8000/index.html
+http://localhost:8000/api/users
