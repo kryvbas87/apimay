@@ -2,7 +2,7 @@
 
 namespace App;
 
-// some changes
+// тест 1
 class Developer extends Worker
 {
     use HasRest;
