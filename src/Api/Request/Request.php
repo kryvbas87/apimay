@@ -17,7 +17,7 @@ class Request
         $this->body = json_decode(file_get_contents('php://input'), true) ?? [];
     }
 
-    public function method(): string
+    public function getMethod(): string
     {
         return $this->method;
     }
