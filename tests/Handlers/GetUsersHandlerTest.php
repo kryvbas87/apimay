@@ -37,4 +37,30 @@ class GetUsersHandlerTest extends TestCase{
             'code' => 200,
         ], \App\Api\Response\JsonResponse::$lastResponse);
     }
+
+    public function testReturnsSingleUserWhenIdIsProvided(): void
+    {
+        $expectedUser = ['id' => 2, 'name' => 'Jane ERW'];
+
+        $repositoryMock = $this->getMockBuilder(UserRepository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $repositoryMock->method('getUserById')->willReturn($expectedUser);
+
+        $requestMock = $this->getMockBuilder(Request::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['get'])
+            ->getMock();
+        $requestMock->method('get')->willReturn('2');
+
+        $handler = new GetUsersHandler($repositoryMock);
+        $handler->handle($requestMock);
+
+        $this->assertEquals([
+            'data' => $expectedUser,
+            'code' => 200,
+        ], \App\Api\Response\JsonResponse::$lastResponse);
+    }
+
+
 }

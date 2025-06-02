@@ -43,4 +43,17 @@ class Database
     {
         return $this->connection;
     }
+
+    // 🔧 Добавлено: установка соединения вручную (для тестов)
+    public static function setTestConnection(PDO $pdo): void
+    {
+        self::$instance = new self();
+        self::$instance->connection = $pdo;
+    }
+
+    // 🔧 (Необязательно, но удобно для сброса)
+    public static function reset(): void
+    {
+        self::$instance = null;
+    }
 }

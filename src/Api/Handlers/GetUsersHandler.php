@@ -22,6 +22,7 @@ class GetUsersHandler implements HandlerInterface
         if ($id !== null && ctype_digit($id)) {
             $user = $this->repository->getUserById((int)$id);
             JsonResponse::send($user ?? ['error' => 'User not found'], $user ? 200 : 404);
+            return;
         }
 
         JsonResponse::send($this->repository->getAllUsers());
