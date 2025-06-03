@@ -2,7 +2,7 @@
 
 namespace solid;
 
-class LoggerInterface implements LoggerInterface
+class FileLogger implements LoggerInterface
 {
     public function log(string $message): void
     {
