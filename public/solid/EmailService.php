@@ -2,7 +2,7 @@
 
 namespace solid;
 
-class EmailService
+class MailerInterface implements MailerInterface
 {
     public function send(string $to, string $message): void
     {

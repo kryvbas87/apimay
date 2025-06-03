@@ -6,18 +6,18 @@ class OrderProcessor
 {
     private OrderValidator $orderValidator;
     private OrderRepository $orderRepository;
-    private EmailService $emailService;
-    private Logger $logger;
+    private MailerInterface $mailer;
+    private LoggerInterface $logger;
 
     public function __construct(
-        OrderValidator $orderValidator,
+        OrderValidator  $orderValidator,
         OrderRepository $orderRepository,
-        EmailService $emailService,
-        Logger $logger
+        MailerInterface $emailService,
+        LoggerInterface $logger
     ) {
         $this->orderValidator = $orderValidator;
         $this->orderRepository = $orderRepository;
-        $this->emailService = $emailService;
+        $this->mailer = $emailService;
         $this->logger = $logger;
     }
 
@@ -28,7 +28,7 @@ class OrderProcessor
         }
 
         $this->orderRepository->save($orderData);
-        $this->emailService->send($orderData['user_email'], 'Your order has been placed.');
+        $this->mailer->send($orderData['user_email'], 'Your order has been placed.');
 
         echo "Order processed\n";
     }
@@ -36,7 +36,7 @@ class OrderProcessor
 
 //🔍 Проблемы:
 //✅ SRP (Single Responsibility Principle) нарушен — класс делает всё: валидацию, БД, email, лог.
-//❌ OCP (Open/Closed) — невозможно расширить поведение без правки кода.
-//❌ LSP (Liskov) — если бы был родитель, то подмена могла бы сломать поведение.
-//❌ ISP (Interface Segregation) — если бы был интерфейс, он был бы раздут.
-//❌ DIP (Dependency Inversion) — жёсткие зависимости от PDO, mail() и file_put_contents.
+//✅ OCP (Open/Closed) — невозможно расширить поведение без правки кода.
+//✅ LSP (Liskov) — если бы был родитель, то подмена могла бы сломать поведение.
+//✅ ISP (Interface Segregation) — если бы был интерфейс, он был бы раздут.
+//✅ DIP (Dependency Inversion) — жёсткие зависимости от PDO, mail() и file_put_contents.
