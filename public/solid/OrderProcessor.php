@@ -4,33 +4,38 @@ namespace solid;
 
 class OrderProcessor
 {
-    public function process(array $orderData): void
-    {
-        // 1. Валидация
-        if (empty($orderData['product_id']) || empty($orderData['user_email'])) {
-            $this->logError("Missing data in order");
-            return;
-        }
+    private OrderValidator $orderValidator;
+    private OrderRepository $orderRepository;
+    private EmailService $emailService;
+    private Logger $logger;
 
-        // 2. Сохраняем в БД
-        $pdo = new PDO('mysql:host=localhost;dbname=shop', 'root', 'root');
-        $stmt = $pdo->prepare("INSERT INTO orders (product_id, user_email) VALUES (?, ?)");
-        $stmt->execute([$orderData['product_id'], $orderData['user_email']]);
-
-        // 3. Шлём email
-        mail($orderData['user_email'], 'Order Confirmed', 'Your order has been placed.');
-
-        echo "Order processed\n";
+    public function __construct(
+        OrderValidator $orderValidator,
+        OrderRepository $orderRepository,
+        EmailService $emailService,
+        Logger $logger
+    ) {
+        $this->orderValidator = $orderValidator;
+        $this->orderRepository = $orderRepository;
+        $this->emailService = $emailService;
+        $this->logger = $logger;
     }
 
-    private function logError(string $message): void
+    public function process(array $orderData): void
     {
-        file_put_contents('log.txt', date('Y-m-d H:i:s') . " ERROR: $message\n", FILE_APPEND);
+        if (!$this->orderValidator->validate($orderData)) {
+            $this->logger->log("Invalid order data");
+        }
+
+        $this->orderRepository->save($orderData);
+        $this->emailService->send($orderData['user_email'], 'Your order has been placed.');
+
+        echo "Order processed\n";
     }
 }
 
 //🔍 Проблемы:
-//❌ SRP (Single Responsibility Principle) нарушен — класс делает всё: валидацию, БД, email, лог.
+//✅ SRP (Single Responsibility Principle) нарушен — класс делает всё: валидацию, БД, email, лог.
 //❌ OCP (Open/Closed) — невозможно расширить поведение без правки кода.
 //❌ LSP (Liskov) — если бы был родитель, то подмена могла бы сломать поведение.
 //❌ ISP (Interface Segregation) — если бы был интерфейс, он был бы раздут.
