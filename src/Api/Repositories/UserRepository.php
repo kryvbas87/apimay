@@ -32,11 +32,30 @@ class UserRepository
 
     public function createUser(string $name, string $email): int
     {
-        $stmt = $this->db->prepare('INSERT INTO users (name, email) VALUES (:name, :email)');
+        try {
+            // Начинаем транзакцию
+            $this->db->beginTransaction();
 
-        $stmt->execute(['name' => $name, 'email' => $email]);
-        return (int) $this->db->lastInsertId();
+            $stmt = $this->db->prepare('INSERT INTO users (name, email) VALUES (:name, :email)');
+            $stmt->execute(['name' => $name, 'email' => $email]);
+
+            $userId = (int) $this->db->lastInsertId();
+
+            // Можно здесь вставить запись в таблицу логов
+            $logStmt = $this->db->prepare('INSERT INTO logs (message) VALUES (:message)');
+            $logStmt->execute(['message' => "Пользователь $name ($email) создан с ID $userId"]);
+
+            // Всё прошло успешно — фиксируем изменения
+            $this->db->commit();
+
+            return $userId;
+        } catch (\PDOException $e) {
+            // При ошибке — откатываем все изменения
+            $this->db->rollBack();
+            throw $e; // или можно залогировать и вернуть null/false
+        }
     }
+
 
     public function deleteUser(int $id): bool
     {
